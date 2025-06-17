@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Chart.js for financial reports -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Authentication Container -->
+    <div id="auth-container" class="auth-container">
+        <!-- Login Form -->
+        <div id="login-form" class="auth-card">
+            <h2>💰 Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="login-email">Email:</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password:</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="btn">Login</button>
+                <button type="button" class="btn btn-secondary" onclick="showRegister()">Create Account</button>
+                
+                <!-- Google Sign-In Button -->
+                <div class="form-group">
+                    <div class="divider">
+                        <span>or</span>
+                    </div>
+                    <button type="button" class="google-signin" onclick="googleSignIn()">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google">
+                        Sign in with Google
+                    </button>
+                </div>
+            </form>
+            <div class="auth-links">
+                <a href="#" onclick="showForgotPassword()">Forgot Password?</a>
+            </div>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-form" class="auth-card" style="display: none;">
+            <h2>💰 Register</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="reg-name">Full Name:</label>
+                    <input type="text" id="reg-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Email:</label>
+                    <input type="email" id="reg-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-phone">Phone Number:</label>
+                    <input type="tel" id="reg-phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Password:</label>
+                    <input type="password" id="reg-password" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="reg-confirm-password">Confirm Password:</label>
+                    <input type="password" id="reg-confirm-password" required minlength="6">
+                </div>
+                <button type="submit" class="btn">Register</button>
+                <button type="button" class="btn btn-secondary" onclick="showLogin()">Back to Login</button>
+            </form>
+        </div>
+
+        <!-- Forgot Password Form -->
+        <div id="forgot-form" class="auth-card" style="display: none;">
+            <h2>🔐 Reset Password</h2>
+            <form id="forgotForm">
+                <div class="form-group">
+                    <label for="forgot-email">Email:</label>
+                    <input type="email" id="forgot-email" required>
+                </div>
+                <button type="submit" class="btn">Send OTP</button>
+                <button type="button" class="btn btn-secondary" onclick="showLogin()">Back to Login</button>
+            </form>
+        </div>
+
+        <!-- OTP Verification Form -->
+        <div id="otp-form" class="auth-card" style="display: none;">
+            <h2>🔢 Enter OTP</h2>
+            <p id="otp-message" class="otp-message"></p>
+            <form id="otpForm">
+                <input type="hidden" id="otp-email">
+                <div class="form-group">
+                    <label for="otp-code">OTP Code:</label>
+                    <input type="text" id="otp-code" required maxlength="6" pattern="[0-9]{6}">
+                </div>
+                <div class="form-group">
+                    <label for="new-password">New Password:</label>
+                    <input type="password" id="new-password" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="confirm-new-password">Confirm New Password:</label>
+                    <input type="password" id="confirm-new-password" required minlength="6">
+                </div>
+                <button type="submit" class="btn">Reset Password</button>
+                <button type="button" class="btn btn-secondary" onclick="showLogin()">Back to Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="main-app" class="main-app">
+        <div class="container">
+            <header>
+                <h1>💰 Financial Management System</h1>
+                <div class="user-info">
+                    <span>Welcome, <strong id="user-name">User</strong>!</span>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+                <div class="summary-cards" id="summary-cards">
+                    <div class="card">
+                        <h3>Total Income</h3>
+                        <p id="total-income">$0.00</p>
+                    </div>
+                    <div class="card">
+                        <h3>Total Expenses</h3>
+                        <p id="total-expenses">$0.00</p>
+                    </div>
+                    <div class="card">
+                        <h3>Balance</h3>
+                        <p id="balance">$0.00</p>
+                    </div>
+                </div>
+            </header>
+
+            <main>
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="showTab('transactions')">Transactions</button>
+                    <button class="tab-btn" onclick="showTab('budgets')">Budgets</button>
+                    <button class="tab-btn" onclick="showTab('reports')">Reports</button>
+                    <button class="tab-btn" onclick="showTab('advice')">AI Advice</button>
+                </div>
+
+                <!-- Transactions Tab -->
+                <div id="transactions" class="tab-content active">
+                    <h2>Add Transaction</h2>
+                    <form id="transaction-form" class="form-container">
+                        <select id="transaction-type" required>
+                            <option value="">Select Type</option>
+                            <option value="income">Income</option>
+                            <option value="expense">Expense</option>
+                        </select>
+                        
+                        <input type="number" id="transaction-amount" placeholder="Amount" step="0.01" min="0.01" required>
+                        
+                        <select id="transaction-category" required>
+                            <option value="">Select Category</option>
+                            <option value="food">Food</option>
+                            <option value="transport">Transport</option>
+                            <option value="entertainment">Entertainment</option>
+                            <option value="utilities">Utilities</option>
+                            <option value="salary">Salary</option>
+                            <option value="freelance">Freelance</option>
+                            <option value="shopping">Shopping</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="education">Education</option>
+                            <option value="other">Other</option>
+                        </select>
+                        
+                        <input type="text" id="transaction-description" placeholder="Description" required>
+                        <input type="date" id="transaction-date" required>
+                        
+                        <button type="submit">Add Transaction</button>
+                    </form>
+
+                    <h2>Recent Transactions</h2>
+                    <div id="transactions-list" class="list-container"></div>
+                </div>
+
+                <!-- Budgets Tab -->
+                <div id="budgets" class="tab-content">
+                    <h2>Create Budget</h2>
+                    <form id="budget-form" class="form-container">
+                        <select id="budget-category" required>
+                            <option value="">Select Category</option>
+                            <option value="food">Food</option>
+                            <option value="transport">Transport</option>
+                            <option value="entertainment">Entertainment</option>
+                            <option value="utilities">Utilities</option>
+                            <option value="shopping">Shopping</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="education">Education</option>
+                            <option value="other">Other</option>
+                        </select>
+                        
+                        <input type="number" id="budget-limit" placeholder="Monthly Limit" step="0.01" min="0.01" required>
+                        <input type="month" id="budget-month" required>
+                        
+                        <button type="submit">Create Budget</button>
+                    </form>
+
+                    <h2>Active Budgets</h2>
+                    <div id="budgets-list" class="list-container"></div>
+                </div>
+                
+                <!-- Reports Tab -->
+                <div id="reports" class="tab-content">
+                    <h2>Financial Reports</h2>
+                    <div class="chart-row">
+                        <div class="chart-container">
+                            <h3>Income vs Expenses</h3>
+                            <canvas id="income-expense-chart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Spending by Category</h3>
+                            <canvas id="category-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-row">
+                        <div class="chart-container full-width">
+                            <h3>Monthly Trend</h3>
+                            <canvas id="trend-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Advice Tab -->
+                <div id="advice" class="tab-content">
+                    <h2>Get Financial Advice</h2>
+                    <div class="advice-container">
+                        <textarea id="advice-query" placeholder="Ask me anything about your finances..." rows="4"></textarea>
+                        <button onclick="getAdvice()">Get AI Advice</button>
+                        
+                        <div id="advice-response" class="advice-response"></div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

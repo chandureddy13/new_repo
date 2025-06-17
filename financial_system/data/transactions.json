@@ -1,0 +1,20 @@
+{
+  "chndureddy7@gmail.com": [
+    {
+      "id": 1,
+      "type": "income",
+      "amount": 1000.0,
+      "category": "education",
+      "description": "goooo",
+      "date": "2025-06-16"
+    },
+    {
+      "id": 2,
+      "type": "expense",
+      "amount": 500.0,
+      "category": "transport",
+      "description": "went to clg",
+      "date": "2025-06-16"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "chndureddy7@gmail.com": [
+    {
+      "id": 1,
+      "type": "expense",
+      "amount": 10000.0,
+      "category": "salary",
+      "description": "none",
+      "date": "2025-06-16"
+    },
+    {
+      "id": 2,
+      "type": "income",
+      "amount": 100000.0,
+      "category": "freelance",
+      "description": "h0",
+      "date": "2025-06-16"
+    }
+  ]
+}

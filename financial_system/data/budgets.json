@@ -1,0 +1,16 @@
+{
+  "chndureddy7@gmail.com": [
+    {
+      "id": 1,
+      "category": "food",
+      "limit": 1000.0,
+      "month": "2025-06"
+    },
+    {
+      "id": 2,
+      "category": "transport",
+      "limit": 2000.0,
+      "month": "2025-06"
+    }
+  ]
+}
